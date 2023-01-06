@@ -153,9 +153,9 @@ public class RecoPlayer : MonoBehaviour
     Vector3 bornSuppGreen;
 
     [SerializeField] 
-    Vector3 bornInfRed;
+    Vector3 bornInfBlue;
     [SerializeField] 
-    Vector3 bornSuppRed;
+    Vector3 bornSuppBlue;
 
 
     private Emgu.CV.VideoCapture webcam;
@@ -247,8 +247,8 @@ public class RecoPlayer : MonoBehaviour
         Hsv borneInfGreen = new Hsv(bornInfGreen.x, bornInfGreen.y, bornInfGreen.z);
         Hsv borneSuppGreen = new Hsv(bornSuppGreen.x, bornSuppGreen.y, bornSuppGreen.z);
 
-        Hsv borneInfRed = new Hsv(bornInfRed.x, bornInfRed.y, bornInfRed.z);
-        Hsv borneSuppRed = new Hsv(bornSuppRed.x, bornSuppRed.y, bornSuppRed.z);
+        Hsv borneInfBlue = new Hsv(bornInfBlue.x, bornInfBlue.y, bornInfBlue.z);
+        Hsv borneSuppBlue = new Hsv(bornSuppBlue.x, bornSuppBlue.y, bornSuppBlue.z);
 
         //hsv = hsv.ThresholdTrunc(borneInf);
         //hsv = hsv.ThresholdBinary(borneInf, borneSupp);
@@ -264,9 +264,9 @@ public class RecoPlayer : MonoBehaviour
         treshHSVGreen = treshHSVGreen.Erode(3);
         treshHSVGreen = treshHSVGreen.Dilate(6);
 
-        Emgu.CV.Image<Gray, byte> treshHSVRed = hsv.InRange(borneInfRed, borneSuppRed);
-        treshHSVRed = treshHSVRed.Erode(3);
-        treshHSVRed = treshHSVRed.Dilate(6);
+        Emgu.CV.Image<Gray, byte> treshHSVBlue = hsv.InRange(borneInfBlue, borneSuppBlue);
+        treshHSVBlue = treshHSVBlue.Erode(3);
+        treshHSVBlue = treshHSVBlue.Dilate(6);
 
 
         //CvInvoke.FindContours(treshHSV, )
@@ -277,29 +277,29 @@ public class RecoPlayer : MonoBehaviour
 
         Mat hier = new Mat();
         Emgu.CV.Util.VectorOfVectorOfPoint contoursGreen = new Emgu.CV.Util.VectorOfVectorOfPoint();
-        Emgu.CV.Util.VectorOfVectorOfPoint contoursRed = new Emgu.CV.Util.VectorOfVectorOfPoint();
+        Emgu.CV.Util.VectorOfVectorOfPoint contoursBlue = new Emgu.CV.Util.VectorOfVectorOfPoint();
         
         CvInvoke.FindContours(treshHSVGreen, contoursGreen, hier, Emgu.CV.CvEnum.RetrType.External, Emgu.CV.CvEnum.ChainApproxMethod.ChainApproxSimple);
-        CvInvoke.FindContours(treshHSVRed, contoursRed, hier, Emgu.CV.CvEnum.RetrType.External, Emgu.CV.CvEnum.ChainApproxMethod.ChainApproxSimple);
+        CvInvoke.FindContours(treshHSVBlue, contoursBlue, hier, Emgu.CV.CvEnum.RetrType.External, Emgu.CV.CvEnum.ChainApproxMethod.ChainApproxSimple);
 
 
         CvInvoke.DrawContours(webcamFrame, contoursGreen, 0, new MCvScalar(255, 0, 0), 2);
-        CvInvoke.DrawContours(webcamFrame, contoursRed, 0, new MCvScalar(255, 255, 255), 2);
+        CvInvoke.DrawContours(webcamFrame, contoursBlue, 0, new MCvScalar(255, 255, 255), 2);
         //
         //CvInvoke.Imshow("Hsv3", original);
 
         Moments mGreen = CvInvoke.Moments(treshHSVGreen);
-        Moments mRed = CvInvoke.Moments(treshHSVRed);
+        Moments mBlue = CvInvoke.Moments(treshHSVBlue);
         
         int cGx = (int)(mGreen.M10 / mGreen.M00);
         int cGy = (int)(mGreen.M01 / mGreen.M00);
         System.Drawing.Point pGreen = new System.Drawing.Point(cGx, cGy);
         CvInvoke.Circle(webcamFrame, pGreen, 10, new MCvScalar(255, 0, 0), 2);
 
-        int cRx = (int)(mRed.M10 / mRed.M00);
-        int cRy = (int)(mRed.M01 / mRed.M00);
-        System.Drawing.Point pRed = new System.Drawing.Point(cRx, cRy);
-        CvInvoke.Circle(webcamFrame, pRed, 10, new MCvScalar(255, 255, 255), 2);
+        int cRx = (int)(mBlue.M10 / mBlue.M00);
+        int cRy = (int)(mBlue.M01 / mBlue.M00);
+        System.Drawing.Point pBlue = new System.Drawing.Point(cRx, cRy);
+        CvInvoke.Circle(webcamFrame, pBlue, 10, new MCvScalar(255, 255, 255), 2);
 
 
         //CvInvoke.MinAreaRect(contours);
