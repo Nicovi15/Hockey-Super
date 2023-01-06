@@ -344,9 +344,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 670602398}
-  - component: {fileID: 670602397}
-  - component: {fileID: 670602399}
-  - component: {fileID: 670602400}
+  - component: {fileID: 670602401}
   m_Layer: 0
   m_Name: test
   m_TagString: Untagged
@@ -354,19 +352,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &670602397
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 670602396}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f2af19cdc0e254f40af2857774086b3a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  im: {fileID: 0}
 --- !u!4 &670602398
 Transform:
   m_ObjectHideFlags: 0
@@ -382,7 +367,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &670602399
+--- !u!114 &670602401
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -391,20 +376,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 670602396}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 944bb4f8839aabb448b42bbccd61adee, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  webcamScreen: {fileID: 1983956727}
---- !u!114 &670602400
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 670602396}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a218b554feefaa428aaea601cd177e7, type: 3}
+  m_Script: {fileID: 11500000, guid: 9c7ec696ceef9574192b7e64bd8fdae4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   rawImage: {fileID: 1983956727}

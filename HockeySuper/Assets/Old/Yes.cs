@@ -55,7 +55,7 @@ public class Yes : MonoBehaviour
 
 
         // making the thread sleep so that things are not happening too fast. might be optional.
-        System.Threading.Thread.Sleep(200);
+        System.Threading.Thread.Sleep(16);
     }
 
     // Start is called before the first frame update
