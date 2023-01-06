@@ -10,10 +10,152 @@ using Emgu.CV.Util;
 public class RecoPlayer : MonoBehaviour
 {
 
+    static Emgu.CV.Image<Bgr, byte> copyToImage(Emgu.CV.Image<Bgr, byte> original, Emgu.CV.Image<Bgr, byte> copy, int xOffset = 0, int yOffset = 0)
+    {
+        int dimX = Mathf.Max(original.Width, xOffset + copy.Width);
+        int dimY = Mathf.Max(original.Height, yOffset + copy.Height);
+        Emgu.CV.Image<Bgr, byte> res = new Image<Bgr, byte>(dimX, dimY);
+
+        for (int i = 0; i < original.Height; i++)
+            for (int j = 0; j < original.Width; j++)
+            {
+                res.Data[i, j, 0] = original.Data[i, j, 0];
+                res.Data[i, j, 1] = original.Data[i, j, 1];
+                res.Data[i, j, 2] = original.Data[i, j, 2];
+            }
+
+        for (int i = 0; i < copy.Height; i++)
+            for (int j = 0; j < copy.Width; j++)
+            {
+                res.Data[i + yOffset, j + xOffset, 0] = copy.Data[i, j, 0];
+                res.Data[i + yOffset, j + xOffset, 1] = copy.Data[i, j, 1];
+                res.Data[i + yOffset, j + xOffset, 2] = copy.Data[i, j, 2];
+            }
+
+        return res;
+    }
+
+    static Emgu.CV.Image<Hsv, byte> copyToImage(Emgu.CV.Image<Hsv, byte> original, Emgu.CV.Image<Hsv, byte> copy, int xOffset = 0, int yOffset = 0)
+    {
+        int dimX = Mathf.Max(original.Width, xOffset + copy.Width);
+        int dimY = Mathf.Max(original.Height, yOffset + copy.Height);
+        Emgu.CV.Image<Hsv, byte> res = new Image<Hsv, byte>(dimX, dimY);
+
+        for (int i = 0; i < original.Height; i++)
+            for (int j = 0; j < original.Width; j++)
+            {
+                res.Data[i, j, 0] = original.Data[i, j, 0];
+                res.Data[i, j, 1] = original.Data[i, j, 1];
+                res.Data[i, j, 2] = original.Data[i, j, 2];
+            }
+
+        for (int i = 0; i < copy.Height; i++)
+            for (int j = 0; j < copy.Width; j++)
+            {
+                res.Data[i + yOffset, j + xOffset, 0] = copy.Data[i, j, 0];
+                res.Data[i + yOffset, j + xOffset, 1] = copy.Data[i, j, 1];
+                res.Data[i + yOffset, j + xOffset, 2] = copy.Data[i, j, 2];
+            }
+
+        return res;
+    }
+
+    static Emgu.CV.Image<Bgr, byte> copyToImage(Emgu.CV.Image<Bgr, byte> original, Emgu.CV.Image<Gray, byte> copy, int xOffset = 0, int yOffset = 0)
+    {
+        int dimX = Mathf.Max(original.Width, xOffset + copy.Width);
+        int dimY = Mathf.Max(original.Height, yOffset + copy.Height);
+        Emgu.CV.Image<Bgr, byte> res = new Image<Bgr, byte>(dimX, dimY);
+
+        for (int i = 0; i < original.Height; i++)
+            for (int j = 0; j < original.Width; j++)
+            {
+                res.Data[i, j, 0] = original.Data[i, j, 0];
+                res.Data[i, j, 1] = original.Data[i, j, 1];
+                res.Data[i, j, 2] = original.Data[i, j, 2];
+            }
+
+        for (int i = 0; i < copy.Height; i++)
+            for (int j = 0; j < copy.Width; j++)
+            {
+                res.Data[i + yOffset, j + xOffset, 0] = copy.Data[i, j, 0];
+                res.Data[i + yOffset, j + xOffset, 1] = copy.Data[i, j, 0];
+                res.Data[i + yOffset, j + xOffset, 2] = copy.Data[i, j, 0];
+            }
+
+        return res;
+    }
+
+    static Emgu.CV.Image<Bgr, byte> GrayCopyChannelToImage(Emgu.CV.Image<Bgr, byte> original, Emgu.CV.Image<Bgr, byte> copy, int canal, int xOffset = 0, int yOffset = 0)
+    {
+        int dimX = Mathf.Max(original.Width, xOffset + copy.Width);
+        int dimY = Mathf.Max(original.Height, yOffset + copy.Height);
+        Emgu.CV.Image<Bgr, byte> res = new Image<Bgr, byte>(dimX, dimY);
+
+        for (int i = 0; i < original.Height; i++)
+            for (int j = 0; j < original.Width; j++)
+            {
+                res.Data[i, j, 0] = original.Data[i, j, 0];
+                res.Data[i, j, 1] = original.Data[i, j, 1];
+                res.Data[i, j, 2] = original.Data[i, j, 2];
+            }
+
+        for (int i = 0; i < copy.Height; i++)
+            for (int j = 0; j < copy.Width; j++)
+            {
+                res.Data[i + xOffset, j + yOffset, 0] = copy.Data[i, j, canal];
+                res.Data[i + xOffset, j + yOffset, 1] = copy.Data[i, j, canal];
+                res.Data[i + xOffset, j + yOffset, 2] = copy.Data[i, j, canal];
+            }
+
+        return res;
+    }
+
+    static Emgu.CV.Image<Hsv, byte> HsvTreshold(Emgu.CV.Image<Hsv, byte> original, Hsv borneInf, Hsv borneSupp, Hsv minValue, Hsv maxValue)
+    {
+        Emgu.CV.Image<Hsv, byte> res = new Image<Hsv, byte>(original.Width, original.Height);
+
+        for (int i = 0; i < original.Height; i++)
+            for (int j = 0; j < original.Width; j++)
+            {
+                res.Data[i, j, 0] = original.Data[i, j, 0] < borneInf.Hue ? (byte)minValue.Hue : original.Data[i, j, 0] > borneSupp.Hue ? (byte)maxValue.Hue : original.Data[i, j, 0];
+                res.Data[i, j, 1] = original.Data[i, j, 1] < borneInf.Satuation ? (byte)minValue.Satuation : original.Data[i, j, 1] > borneSupp.Satuation ? (byte)maxValue.Satuation : original.Data[i, j, 1];
+                res.Data[i, j, 2] = original.Data[i, j, 2] < borneInf.Value ? (byte)minValue.Value : original.Data[i, j, 2] > borneSupp.Value ? (byte)maxValue.Value : original.Data[i, j, 2];
+            }
+
+        return res;
+    }
+
+    static Emgu.CV.Image<Hsv, byte> HsvTreshold(Emgu.CV.Image<Hsv, byte> original, Hsv borneInf, Hsv borneSupp)
+    {
+        Emgu.CV.Image<Hsv, byte> res = new Image<Hsv, byte>(original.Width, original.Height);
+
+        for (int i = 0; i < original.Height; i++)
+            for (int j = 0; j < original.Width; j++)
+            {
+                res.Data[i, j, 0] = original.Data[i, j, 0] < borneInf.Hue ? (byte)borneInf.Hue :
+                                    original.Data[i, j, 0] > borneSupp.Hue ? (byte)borneSupp.Hue :
+                                    original.Data[i, j, 0];
+                res.Data[i, j, 1] = original.Data[i, j, 1] < borneInf.Satuation ? (byte)borneInf.Satuation :
+                                    original.Data[i, j, 1] > borneSupp.Satuation ? (byte)borneSupp.Satuation :
+                                    original.Data[i, j, 1];
+                res.Data[i, j, 2] = original.Data[i, j, 2] < borneInf.Value ? (byte)borneInf.Value :
+                                    original.Data[i, j, 2] > borneSupp.Value ? (byte)borneSupp.Value :
+                                    original.Data[i, j, 2];
+            }
+
+        return res;
+    }
+
+    [SerializeField]
+    Vector3 bornInf;
+
+    [SerializeField]
+    Vector3 bornSupp;
+
     private Emgu.CV.VideoCapture webcam;
     private Mat webcamFrame;
     public UnityEngine.UI.RawImage rawImage;
-    public Texture2D tex;
+    Texture2D tex;
 
     // Start is called before the first frame update
     void Start()
@@ -30,7 +172,9 @@ public class RecoPlayer : MonoBehaviour
         if (webcam != null && webcam.IsOpened)
         {
             webcam.Grab();
+            findNewFace(webcamFrame);
             DisplayFrameOnPlan();
+            
         }
         else
         {
@@ -110,6 +254,64 @@ public class RecoPlayer : MonoBehaviour
         //
         //    Debug.Log(faces[0].Location);
         //}
+
+        // HSV
+        Emgu.CV.Image<Hsv, byte> hsv = new Emgu.CV.Image<Hsv, byte>(webcamFrame.Width, webcamFrame.Height);
+        CvInvoke.CvtColor(webcamFrame, hsv, ColorConversion.Bgr2Hsv);
+        CvInvoke.Imshow("Hsv", hsv);
+
+        // Seui hsv
+        Hsv borneInf = new Hsv(bornInf.x, bornInf.y, bornInf.z);
+        Hsv borneSupp = new Hsv(bornSupp.x, bornSupp.y, bornSupp.z);
+        Hsv maxValue = new Hsv(0, 0, 255);
+        Hsv minValue = new Hsv(0, 120, 0);
+
+        //hsv = hsv.ThresholdTrunc(borneInf);
+        //hsv = hsv.ThresholdBinary(borneInf, borneSupp);
+
+        //hsv = HsvTreshold(hsv, borneInf, borneSupp);
+        //hsv = HsvTreshold(hsv, borneInf, borneSupp);
+
+        //hsv = HsvTreshold(hsv, borneInf, borneSupp);
+
+        //hsv = hsv.InRange(borneInf, borneSupp);
+
+        Emgu.CV.Image<Gray, byte> treshHSV = hsv.InRange(borneInf, borneSupp);
+        treshHSV = treshHSV.Erode(3);
+        treshHSV = treshHSV.Dilate(6);
+
+        //CvInvoke.FindContours(treshHSV, )
+
+        //hsv = HsvTreshold(hsv, borneInf, borneSupp, minValue, maxValue);
+        //hsv = hsv.ThresholdTrunc(borneInf);
+
+
+        Mat hier = new Mat();
+        Emgu.CV.Util.VectorOfVectorOfPoint contours = new Emgu.CV.Util.VectorOfVectorOfPoint();
+        CvInvoke.FindContours(treshHSV, contours, hier, Emgu.CV.CvEnum.RetrType.External, Emgu.CV.CvEnum.ChainApproxMethod.ChainApproxSimple);
+
+        CvInvoke.DrawContours(webcamFrame, contours, 0, new MCvScalar(255, 0, 0), 2);
+        //
+        //CvInvoke.Imshow("Hsv3", original);
+
+        Moments m = CvInvoke.Moments(treshHSV);
+        int cx = (int)(m.M10 / m.M00);
+        int cy = (int)(m.M01 / m.M00);
+        System.Drawing.Point p = new System.Drawing.Point(cx, cy);
+        CvInvoke.Circle(webcamFrame, p, 10, new MCvScalar(255, 0, 0), 2);
+
+        //CvInvoke.MinAreaRect(contours);
+        //System.Drawing.Rectangle rect = CvInvoke.BoundingRectangle(contours);
+        //System.Drawing.Point p1 = new System.Drawing.Point(rect.Right, rect.Bottom);
+        //System.Drawing.Point p2 = new System.Drawing.Point(rect.Right, rect.Top);
+        //System.Drawing.Point p3 = new System.Drawing.Point(rect.Left, rect.Bottom);
+        //System.Drawing.Point p4 = new System.Drawing.Point(rect.Left, rect.Top);
+        //CvInvoke.Line(original, p1, p2, new MCvScalar(255, 0, 0), 2);
+        //CvInvoke.Line(original, p3, p4, new MCvScalar(255, 0, 0), 2);
+        //CvInvoke.Line(original, p1, p3, new MCvScalar(255, 0, 0), 2);
+        //CvInvoke.Line(original, p2, p4, new MCvScalar(255, 0, 0), 2);
+
+        //CvInvoke.Imshow("Hsv4", webcamFrame);
     }
 
 
