@@ -6,7 +6,7 @@ public class Ball : MonoBehaviour
 {
     [Header("Physics settings")]
     [SerializeField]
-    Vector3 dir;
+    public Vector3 dir;
     [SerializeField]
     const float cdColPlayerMax = 0.1f;
     [SerializeField]
@@ -28,6 +28,10 @@ public class Ball : MonoBehaviour
     [SerializeField]
     public int currentMultiplier;
 
+    [Header("Score settings")]
+    [SerializeField]
+    public int score;
+
     GameManager GM;
     float cdColPlayer = 0.0f;
     Rigidbody rb;
@@ -38,6 +42,7 @@ public class Ball : MonoBehaviour
         GM = GameObject.Find("GameManager").GetComponent<GameManager>();
         rb = GetComponent<Rigidbody>();
         speed = speedInit;
+        score = 1;
         GM.updateBallUI(this);
     }
 

@@ -7,6 +7,9 @@ public class Goal : MonoBehaviour
     [SerializeField]
     Player player;
 
+    [SerializeField]
+    float timeDestroy;
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Ball"))
@@ -16,9 +19,9 @@ public class Goal : MonoBehaviour
                 return;
 
             Debug.Log("Goal !");
-            StartCoroutine(DestroyBall(0.3f, other.gameObject));
+            StartCoroutine(DestroyBall(timeDestroy, other.gameObject));
             ball.isDestroyed = true;
-            player.Goal();
+            player.Goal(ball.score);
         }
     }
 

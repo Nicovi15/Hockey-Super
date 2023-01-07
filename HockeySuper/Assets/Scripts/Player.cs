@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using TMPro;
 enum Controller
 {
     Keyboard = 0,
@@ -36,14 +36,25 @@ public class Player : MonoBehaviour
     float moveSpeed;
     [SerializeField]
     Vector3 bounds;
+    [SerializeField]
+    Vector3 ballDir;
+
+    [Header("UI Settings")]
+    [SerializeField]
+    TextMeshProUGUI scoreText;
 
     Vector3 newMousePos;
     Vector3 moveDirection;
     Rigidbody rb;
+    GameManager GM;
+    public int score;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        GM = GameObject.Find("GameManager").GetComponent<GameManager>();
+        score = 0;
+        scoreText.text = score.ToString();
     }
 
     void Update()
@@ -95,8 +106,10 @@ public class Player : MonoBehaviour
         rb.MovePosition(newPos);
     }
 
-    public void Goal()
+    public void Goal(int point)
     {
-
+        score += point;
+        scoreText.text = score.ToString();
+        StartCoroutine(GM.startNewRound(ballDir));
     } 
 }
