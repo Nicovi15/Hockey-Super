@@ -48,6 +48,8 @@ public class Player : MonoBehaviour
     Rigidbody rb;
     GameManager GM;
     public int score;
+    [HideInInspector]
+    public CameraPlayer CP;
 
     private void Awake()
     {
@@ -55,6 +57,7 @@ public class Player : MonoBehaviour
         GM = GameObject.Find("GameManager").GetComponent<GameManager>();
         score = 0;
         scoreText.text = score.ToString();
+        CP = cam.GetComponent<CameraPlayer>();
     }
 
     void Update()
@@ -110,6 +113,6 @@ public class Player : MonoBehaviour
     {
         score += point;
         scoreText.text = score.ToString();
-        StartCoroutine(GM.startNewRound(ballDir));
+        StartCoroutine(GM.Goal(this, ballDir));
     } 
 }

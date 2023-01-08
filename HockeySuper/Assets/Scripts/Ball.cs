@@ -8,7 +8,9 @@ public class Ball : MonoBehaviour
     [SerializeField]
     public Vector3 dir;
     [SerializeField]
-    const float cdColPlayerMax = 0.1f;
+    float cdColPlayerMax = 0.1f;
+    [SerializeField]
+    float cdColWallMax = 0.1f;
     [SerializeField]
     bool velocityImpactCalculation;
     [SerializeField]
@@ -32,10 +34,20 @@ public class Ball : MonoBehaviour
     [SerializeField]
     public int score;
 
+    [Header("Color settings")]
+    [SerializeField]
+    TrailRenderer TR;
+    [SerializeField]
+    List<Color> ballColors;
+    [SerializeField]
+    List<Gradient> trailGradients;
+
     GameManager GM;
     float cdColPlayer = 0.0f;
+    float cdColWall = 0.0f;
     Rigidbody rb;
     public bool isDestroyed = false;
+    Material mat;
 
     private void Awake()
     {
@@ -44,12 +56,18 @@ public class Ball : MonoBehaviour
         speed = speedInit;
         score = 1;
         GM.updateBallUI(this);
+        mat = GetComponent<MeshRenderer>().material;
+        mat.color = ballColors[currentMultiplier];
+        TR.colorGradient = trailGradients[currentMultiplier];
     }
 
     void Update()
     {
         if (cdColPlayer > 0.0f)
             cdColPlayer -= Time.deltaTime;
+
+        if (cdColWall > 0.0f)
+            cdColWall -= Time.deltaTime;
     }
 
     private void FixedUpdate()
@@ -59,25 +77,16 @@ public class Ball : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(currentMultiplier < 3)
-        {
-            currentHits++;
-            if (currentHits >= hitsBeforeUp)
-            {
-                currentHits = 0;
-                currentMultiplier++;
-                speed = speedInit + currentMultiplier * speedMultiplier;
-            }
-            GM.updateBallUI(this);
-        }
-
         if (collision.gameObject.CompareTag("Player") && cdColPlayer <= 0.0f)
         {
+            addHit();
             cdColPlayer = cdColPlayerMax;
             Rigidbody rbPlayer = collision.gameObject.GetComponent<Rigidbody>();
             Vector3 playerCenter = new Vector3(collision.transform.position.x, 0.0f, collision.transform.position.z);
+            //StartCoroutine(collision.gameObject.GetComponent<Player>().CP.shake(0.02f + 0.01f * currentMultiplier, 1.0f + 0.5f * currentMultiplier));
+            collision.gameObject.GetComponent<Player>().CP.shake(0.02f + 0.01f * currentMultiplier, 1.0f + 0.5f * currentMultiplier);
 
-            if(velocityImpactCalculation && rbPlayer.velocity.magnitude > minVel)
+            if (velocityImpactCalculation && rbPlayer.velocity.magnitude > minVel)
             {
                 Vector3 n = transform.position - playerCenter;
                 n.Normalize();
@@ -106,12 +115,45 @@ public class Ball : MonoBehaviour
                 dir.Normalize();
             }
         }
-        else if (collision.gameObject.CompareTag("Wall"))
+        if (collision.gameObject.CompareTag("Wall") && cdColWall <= 0.0f)
         {
+            addHit();
+            cdColWall = cdColWallMax;
             Vector3 n = collision.transform.GetComponent<Wall>().normal;
             dir = (-2.0f * Vector3.Dot(dir, n) * n + dir);
             dir.y = 0;
             dir.Normalize();
+        }
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Wall") && cdColWall <= 0.0f)
+        {
+            //addHit();
+            cdColWall = cdColWallMax;
+            Vector3 n = collision.transform.GetComponent<Wall>().normal;
+            dir = (-2.0f * Vector3.Dot(dir, n) * n + dir);
+            dir.y = 0;
+            dir.Normalize();
+        }
+    }
+
+    void addHit()
+    {
+        StartCoroutine(GM.bumpBallUI());
+        if (currentMultiplier < 3)
+        {
+            currentHits++;
+            if (currentHits >= hitsBeforeUp)
+            {
+                currentHits = 0;
+                currentMultiplier++;
+                speed = speedInit + currentMultiplier * speedMultiplier;
+                mat.color = ballColors[currentMultiplier];
+                TR.colorGradient = trailGradients[currentMultiplier];
+            }
+            GM.updateBallUI(this);
         }
     }
 

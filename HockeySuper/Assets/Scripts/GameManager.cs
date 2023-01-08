@@ -19,6 +19,24 @@ public class GameManager : MonoBehaviour
     Image ballJauge;
     [SerializeField]
     public List<Color> ballColors;
+    [SerializeField]
+    Animator ballAnim;
+    [SerializeField]
+    float timeBump;
+    [SerializeField]
+    Vector2 tailleBump;
+    [SerializeField]
+    Animator goalAnim;
+    [SerializeField]
+    TextMeshProUGUI goalText;
+    [SerializeField]
+    Color colorP1;
+    [SerializeField]
+    Color colorP2;
+
+    [Header("Music Settings")]
+    [SerializeField]
+    AudioSource backgroundMusic;
 
     [Header("Game Settings")]
     [SerializeField]
@@ -30,10 +48,15 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     Player player2;
 
+    Vector2 initFondSize;
+    Vector2 initBallSize;
+
     // Start is called before the first frame update
     void Start()
     {
         StartCoroutine(startGame());
+        initFondSize = fondBall.rectTransform.sizeDelta;
+        initBallSize = ball.rectTransform.sizeDelta;
     }
 
     // Update is called once per frame
@@ -44,6 +67,7 @@ public class GameManager : MonoBehaviour
 
     public void updateBallUI(Ball b)
     {
+        backgroundMusic.pitch = 1.0f + 0.025f * b.currentMultiplier;
         scoreBall.text = b.score.ToString();
         fondBallJauge.color = ballColors[b.currentMultiplier];
         ball.color = ballColors[b.currentMultiplier];
@@ -72,12 +96,40 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator spawnNewBall(bool random = true, Vector3 dir = new Vector3())
     {
-        Ball ball = Instantiate(ballPrefab).GetComponent<Ball>();
-        ball.dir = Vector3.zero;
+        ballAnim.SetTrigger("Next");
+        Ball ballO = Instantiate(ballPrefab).GetComponent<Ball>();
+        ballO.dir = Vector3.zero;
         yield return new WaitForSeconds(1.0f);
         if (random)
-            ball.dir = Random.Range(0, 2) == 0 ? new Vector3(0, 0, -1) : new Vector3(0, 0, 1);
+            ballO.dir = Random.Range(0, 2) == 0 ? new Vector3(0, 0, -1) : new Vector3(0, 0, 1);
         else
-            ball.dir = dir;
+            ballO.dir = dir;
+    }
+
+    public IEnumerator Goal(Player p, Vector3 dir)
+    {
+        if (p == player1)
+            goalText.color = colorP1;
+        else
+            goalText.color = colorP2;
+        player1.CP.shake(0.1f, 6.0f);
+        player2.CP.shake(0.1f, 6.0f);
+        ballAnim.SetTrigger("Next");
+        yield return new WaitForSeconds(0.2f);
+        goalAnim.SetTrigger("Play");
+        yield return new WaitForSeconds(goalAnim.GetCurrentAnimatorClipInfo(0)[0].clip.length);
+        yield return new WaitForSeconds(0.5f);
+        fondBall.rectTransform.sizeDelta = initFondSize;
+        ball.rectTransform.sizeDelta = initBallSize;
+        StartCoroutine(startNewRound(dir));
+    }
+
+    public IEnumerator bumpBallUI()
+    {
+        fondBall.rectTransform.sizeDelta = initFondSize + tailleBump;
+        ball.rectTransform.sizeDelta = initBallSize + tailleBump;
+        yield return new WaitForSeconds(timeBump);
+        fondBall.rectTransform.sizeDelta = initFondSize;
+        ball.rectTransform.sizeDelta = initBallSize;
     }
 }
