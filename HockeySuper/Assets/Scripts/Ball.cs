@@ -34,6 +34,19 @@ public class Ball : MonoBehaviour
     [SerializeField]
     public int score;
 
+    [Header("Sounds settings")]
+    [SerializeField]
+    AudioClip playerSound;
+    [SerializeField]
+    AudioClip wallSound;
+    AudioSource AS;
+    [SerializeField]
+    float pitchAdd = 0.1f;
+    int pitchAddCount = 0;
+    [SerializeField]
+    float pitchComboTime = 0.5f;
+    float pitchTime = 0.5f;
+
     [Header("Color settings")]
     [SerializeField]
     TrailRenderer TR;
@@ -53,6 +66,7 @@ public class Ball : MonoBehaviour
     {
         GM = GameObject.Find("GameManager").GetComponent<GameManager>();
         rb = GetComponent<Rigidbody>();
+        AS = GetComponent<AudioSource>();
         speed = speedInit;
         score = 1;
         GM.updateBallUI(this);
@@ -68,6 +82,11 @@ public class Ball : MonoBehaviour
 
         if (cdColWall > 0.0f)
             cdColWall -= Time.deltaTime;
+
+        if (pitchTime > 0.0f)
+            pitchTime -= Time.deltaTime;
+        if (pitchTime < 0.0f)
+            pitchAddCount = 0;
     }
 
     private void FixedUpdate()
@@ -80,6 +99,8 @@ public class Ball : MonoBehaviour
         if (collision.gameObject.CompareTag("Player") && cdColPlayer <= 0.0f)
         {
             addHit();
+            AS.clip = playerSound;
+            AS.Play();
             cdColPlayer = cdColPlayerMax;
             Rigidbody rbPlayer = collision.gameObject.GetComponent<Rigidbody>();
             Vector3 playerCenter = new Vector3(collision.transform.position.x, 0.0f, collision.transform.position.z);
@@ -118,6 +139,8 @@ public class Ball : MonoBehaviour
         if (collision.gameObject.CompareTag("Wall") && cdColWall <= 0.0f)
         {
             addHit();
+            AS.clip = wallSound;
+            AS.Play();
             cdColWall = cdColWallMax;
             Vector3 n = collision.transform.GetComponent<Wall>().normal;
             dir = (-2.0f * Vector3.Dot(dir, n) * n + dir);
@@ -141,6 +164,9 @@ public class Ball : MonoBehaviour
 
     void addHit()
     {
+        pitchTime = pitchComboTime;
+        pitchAddCount++;
+        AS.pitch = Mathf.Min(1.0f + pitchAddCount * pitchAdd, 2.0f);
         StartCoroutine(GM.bumpBallUI());
         if (currentMultiplier < 3)
         {

@@ -37,6 +37,11 @@ public class GameManager : MonoBehaviour
     [Header("Music Settings")]
     [SerializeField]
     AudioSource backgroundMusic;
+    [Header("Sounds Settings")]
+    [SerializeField]
+    AudioClip startSound;
+    [SerializeField]
+    AudioClip goalSound;
 
     [Header("Game Settings")]
     [SerializeField]
@@ -50,11 +55,20 @@ public class GameManager : MonoBehaviour
 
     Vector2 initFondSize;
     Vector2 initBallSize;
+    AudioSource AS;
+
+    [Header("Menu Settings")]
+    [SerializeField]
+    GameObject UImenu;
+    [SerializeField]
+    GameObject UIgame;
+    [SerializeField]
+    Animator camAnim;
 
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(startGame());
+        AS = GetComponent<AudioSource>();
         initFondSize = fondBall.rectTransform.sizeDelta;
         initBallSize = ball.rectTransform.sizeDelta;
     }
@@ -63,6 +77,21 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void startButtonClick()
+    {
+        UImenu.SetActive(false);
+        camAnim.SetTrigger("Start");
+        StartCoroutine(startCoroutine());
+    }
+
+    IEnumerator startCoroutine()
+    {
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForSeconds(camAnim.GetCurrentAnimatorClipInfo(0)[0].clip.length * 3.0f + 0.3f);
+        StartCoroutine(startGame());
+        UIgame.SetActive(true);
     }
 
     public void updateBallUI(Ball b)
@@ -79,7 +108,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator startGame()
     {
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1.0f);
         StartCoroutine(spawnNewBall());
     }
 
@@ -99,6 +128,8 @@ public class GameManager : MonoBehaviour
         ballAnim.SetTrigger("Next");
         Ball ballO = Instantiate(ballPrefab).GetComponent<Ball>();
         ballO.dir = Vector3.zero;
+        AS.clip = startSound;
+        AS.Play();
         yield return new WaitForSeconds(1.0f);
         if (random)
             ballO.dir = Random.Range(0, 2) == 0 ? new Vector3(0, 0, -1) : new Vector3(0, 0, 1);
@@ -112,6 +143,8 @@ public class GameManager : MonoBehaviour
             goalText.color = colorP1;
         else
             goalText.color = colorP2;
+        AS.clip = goalSound;
+        AS.Play();
         player1.CP.shake(0.1f, 6.0f);
         player2.CP.shake(0.1f, 6.0f);
         ballAnim.SetTrigger("Next");
@@ -121,6 +154,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         fondBall.rectTransform.sizeDelta = initFondSize;
         ball.rectTransform.sizeDelta = initBallSize;
+        yield return new WaitForSeconds(1.0f);
         StartCoroutine(startNewRound(dir));
     }
 
