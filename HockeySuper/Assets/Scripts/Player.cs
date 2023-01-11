@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-enum Controller
+public enum Controller
 {
     Keyboard = 0,
     Mouse = 1,
@@ -15,7 +15,7 @@ public class Player : MonoBehaviour
 {
     [Header("Control Settings")]
     [SerializeField]
-    Controller controller;
+    public Controller controller;
     [Header("Keyboard Settings")]
     [SerializeField]
     KeyCode Left;
@@ -42,6 +42,8 @@ public class Player : MonoBehaviour
     [Header("UI Settings")]
     [SerializeField]
     TextMeshProUGUI scoreText;
+    [SerializeField]
+    public string pseudo;
 
     Vector3 newMousePos;
     Vector3 moveDirection;
@@ -50,6 +52,8 @@ public class Player : MonoBehaviour
     public int score;
     [HideInInspector]
     public CameraPlayer CP;
+
+    
 
     private void Awake()
     {

@@ -33,6 +33,10 @@ public class GameManager : MonoBehaviour
     Color colorP1;
     [SerializeField]
     Color colorP2;
+    [SerializeField]
+    TextMeshProUGUI p1Name;
+    [SerializeField]
+    TextMeshProUGUI p2Name;
 
     [Header("Music Settings")]
     [SerializeField]
@@ -42,6 +46,8 @@ public class GameManager : MonoBehaviour
     AudioClip startSound;
     [SerializeField]
     AudioClip goalSound;
+    [SerializeField]
+    AudioSource mainTitleSound;
 
     [Header("Game Settings")]
     [SerializeField]
@@ -64,6 +70,16 @@ public class GameManager : MonoBehaviour
     GameObject UIgame;
     [SerializeField]
     Animator camAnim;
+    [SerializeField]
+    TMP_InputField scoreInput;
+    [SerializeField]
+    TMP_InputField pseudoP1;
+    [SerializeField]
+    TMP_InputField pseudoP2;
+    [SerializeField]
+    TMP_Dropdown inputP1;
+    [SerializeField]
+    TMP_Dropdown inputP2;
 
     // Start is called before the first frame update
     void Start()
@@ -83,6 +99,14 @@ public class GameManager : MonoBehaviour
     {
         UImenu.SetActive(false);
         camAnim.SetTrigger("Start");
+        player1.pseudo = pseudoP1.text;
+        player2.pseudo = pseudoP2.text;
+        p1Name.text = pseudoP1.text;
+        p2Name.text = pseudoP2.text;
+        player1.controller = inputP1.value == 0 ? Controller.Mouse : inputP1.value == 1 ? Controller.Keyboard : Controller.Webcam;
+        player2.controller = inputP2.value == 0 ? Controller.Mouse : inputP2.value == 1 ? Controller.Keyboard : Controller.Webcam;
+        scoreMax = int.Parse(scoreInput.text);
+        mainTitleSound.Play();
         StartCoroutine(startCoroutine());
     }
 

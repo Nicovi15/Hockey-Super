@@ -175,6 +175,7 @@ public class Ball : MonoBehaviour
             {
                 currentHits = 0;
                 currentMultiplier++;
+                score = currentMultiplier + 1;
                 speed = speedInit + currentMultiplier * speedMultiplier;
                 mat.color = ballColors[currentMultiplier];
                 TR.colorGradient = trailGradients[currentMultiplier];
