@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -81,6 +82,12 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     TMP_Dropdown inputP2;
 
+    [Header("Win Settings")]
+    [SerializeField]
+    GameObject WinObject;
+    [SerializeField]
+    TextMeshProUGUI wName;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -98,9 +105,15 @@ public class GameManager : MonoBehaviour
     public void startButtonClick()
     {
         UImenu.SetActive(false);
+        UIgame.SetActive(false);
+        WinObject.SetActive(false);
         camAnim.SetTrigger("Start");
         player1.pseudo = pseudoP1.text;
         player2.pseudo = pseudoP2.text;
+        player1.score = 0;
+        player2.score = 0;
+        player1.Reset();
+        player2.Reset();
         p1Name.text = pseudoP1.text;
         p2Name.text = pseudoP2.text;
         player1.controller = inputP1.value == 0 ? Controller.Mouse : inputP1.value == 1 ? Controller.Keyboard : Controller.Webcam;
@@ -136,12 +149,13 @@ public class GameManager : MonoBehaviour
         StartCoroutine(spawnNewBall());
     }
 
-    public IEnumerator startNewRound(Vector3 dir)
+    public IEnumerator startNewRound(Vector3 dir, Player p)
     {
-        if (player1.score >= scoreMax)
-            Debug.Log("P1 win");
-        else if (player2.score >= scoreMax)
-            Debug.Log("P2 win");
+        if (player1.score >= scoreMax || player2.score >= scoreMax)
+        {
+            showWinner(p);
+            yield break;
+        }
 
         yield return new WaitForSeconds(1.5f);
         StartCoroutine(spawnNewBall(false, dir));
@@ -179,7 +193,7 @@ public class GameManager : MonoBehaviour
         fondBall.rectTransform.sizeDelta = initFondSize;
         ball.rectTransform.sizeDelta = initBallSize;
         yield return new WaitForSeconds(1.0f);
-        StartCoroutine(startNewRound(dir));
+        StartCoroutine(startNewRound(dir, p));
     }
 
     public IEnumerator bumpBallUI()
@@ -189,5 +203,16 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(timeBump);
         fondBall.rectTransform.sizeDelta = initFondSize;
         ball.rectTransform.sizeDelta = initBallSize;
+    }
+
+    public void showWinner(Player p)
+    {
+        WinObject.SetActive(true);
+        wName.text = p.pseudo;
+    }
+
+    public void menuClick()
+    {
+        SceneManager.LoadScene(0);
     }
 }

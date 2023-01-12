@@ -118,5 +118,10 @@ public class Player : MonoBehaviour
         score += point;
         scoreText.text = score.ToString();
         StartCoroutine(GM.Goal(this, ballDir));
-    } 
+    }
+
+    public void Reset()
+    {
+        scoreText.text = score.ToString();
+    }
 }
