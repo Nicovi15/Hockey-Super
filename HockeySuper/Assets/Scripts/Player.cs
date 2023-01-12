@@ -44,6 +44,8 @@ public class Player : MonoBehaviour
     TextMeshProUGUI scoreText;
     [SerializeField]
     public string pseudo;
+    [SerializeField]
+    ParticleSystem PS;
 
     Vector3 newMousePos;
     Vector3 moveDirection;
@@ -118,6 +120,9 @@ public class Player : MonoBehaviour
         score += point;
         scoreText.text = score.ToString();
         StartCoroutine(GM.Goal(this, ballDir));
+        var em = PS.emission;
+        em.rateOverTime = 500 + 300 * (point - 1);
+        PS.Play();
     }
 
     public void Reset()
