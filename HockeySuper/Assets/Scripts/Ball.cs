@@ -103,11 +103,12 @@ public class Ball : MonoBehaviour
             AS.Play();
             cdColPlayer = cdColPlayerMax;
             Rigidbody rbPlayer = collision.gameObject.GetComponent<Rigidbody>();
+            Player p = collision.gameObject.GetComponent<Player>();
             Vector3 playerCenter = new Vector3(collision.transform.position.x, 0.0f, collision.transform.position.z);
             //StartCoroutine(collision.gameObject.GetComponent<Player>().CP.shake(0.02f + 0.01f * currentMultiplier, 1.0f + 0.5f * currentMultiplier));
             collision.gameObject.GetComponent<Player>().CP.shake(0.02f + 0.01f * currentMultiplier, 1.0f + 0.5f * currentMultiplier);
 
-            if (velocityImpactCalculation && rbPlayer.velocity.magnitude > minVel)
+            if (velocityImpactCalculation && rbPlayer.velocity.magnitude > minVel && p.controller != Controller.Webcam)
             {
                 Vector3 n = transform.position - playerCenter;
                 n.Normalize();

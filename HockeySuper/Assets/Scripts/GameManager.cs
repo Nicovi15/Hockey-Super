@@ -81,12 +81,18 @@ public class GameManager : MonoBehaviour
     TMP_Dropdown inputP1;
     [SerializeField]
     TMP_Dropdown inputP2;
+    [SerializeField]
+    GameObject MainMenu;
+    [SerializeField]
+    GameObject CameraMenu;
 
     [Header("Win Settings")]
     [SerializeField]
     GameObject WinObject;
     [SerializeField]
     TextMeshProUGUI wName;
+    [SerializeField]
+    GameObject RPgo;
 
     // Start is called before the first frame update
     void Start()
@@ -102,8 +108,22 @@ public class GameManager : MonoBehaviour
         
     }
 
+    public void camCalibButtonClick()
+    {
+        MainMenu.SetActive(false);
+        CameraMenu.SetActive(true);
+    }
+
+    public void backButtonClick()
+    {
+        MainMenu.SetActive(true);
+        CameraMenu.SetActive(false);
+    }
+
     public void startButtonClick()
     {
+        if ((inputP1.value == 2 || inputP2.value == 2) && !RPgo.activeSelf)
+            RPgo.SetActive(true);
         UImenu.SetActive(false);
         UIgame.SetActive(false);
         WinObject.SetActive(false);

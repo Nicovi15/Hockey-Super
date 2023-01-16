@@ -18,7 +18,7 @@ public class Goal : MonoBehaviour
             if (ball.isDestroyed)
                 return;
 
-            Debug.Log("Goal !");
+            //Debug.Log("Goal !");
             StartCoroutine(DestroyBall(timeDestroy, other.gameObject));
             ball.isDestroyed = true;
             player.Goal(ball.score);

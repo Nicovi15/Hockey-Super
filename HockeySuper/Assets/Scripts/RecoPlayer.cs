@@ -11,16 +11,15 @@ public class RecoPlayer : MonoBehaviour
 {
     [Header("Green Settings")]
     [SerializeField] 
-    Vector3 bornInfGreen;
+    public Vector3 bornInfGreen;
     [SerializeField]
-    Vector3 bornSuppGreen;
+    public Vector3 bornSuppGreen;
 
     [Header("Blue Settings")]
     [SerializeField] 
-    Vector3 bornInfBlue;
+    public Vector3 bornInfBlue;
     [SerializeField] 
-    Vector3 bornSuppBlue;
-
+    public Vector3 bornSuppBlue;
 
     private Emgu.CV.VideoCapture webcam;
     private Mat webcamFrame;
