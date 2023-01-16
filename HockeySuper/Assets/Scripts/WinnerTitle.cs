@@ -33,6 +33,8 @@ public class WinnerTitle : MonoBehaviour
 
     private void OnEnable()
     {
+        text1 = Tm1.text;
+        text2 = Tm2.text;
         co = StartCoroutine(textEffect());
     }
 

@@ -273,7 +273,7 @@ MonoBehaviour:
   dir: {x: 0, y: 0, z: -1}
   cdColPlayerMax: 0.1
   cdColWallMax: 0.1
-  velocityImpactCalculation: 1
+  velocityImpactCalculation: 0
   minVel: 10
   speedInit: 7.5
   speed: 7.5

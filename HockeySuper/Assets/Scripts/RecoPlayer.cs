@@ -28,6 +28,9 @@ public class RecoPlayer : MonoBehaviour
     public UnityEngine.UI.RawImage rawImage;
     Texture2D tex;
 
+    public Vector2 greenPos;
+    public Vector2 bluePos;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -61,7 +64,7 @@ public class RecoPlayer : MonoBehaviour
 
         if (!webcamFrame.IsEmpty)
         {
-            Debug.Log(webcamFrame.Size);
+            //Debug.Log(webcamFrame.Size);
         }
     }
 
@@ -136,11 +139,13 @@ public class RecoPlayer : MonoBehaviour
         int cGy = (int)(mGreen.M01 / mGreen.M00);
         System.Drawing.Point pGreen = new System.Drawing.Point(cGx, cGy);
         CvInvoke.Circle(webcamFrame, pGreen, 10, new MCvScalar(255, 0, 0), 2);
+        greenPos = new Vector2(cGx, cGy);
 
         int cRx = (int)(mBlue.M10 / mBlue.M00);
         int cRy = (int)(mBlue.M01 / mBlue.M00);
         System.Drawing.Point pBlue = new System.Drawing.Point(cRx, cRy);
         CvInvoke.Circle(webcamFrame, pBlue, 10, new MCvScalar(255, 255, 255), 2);
+        bluePos = new Vector2(cRx, cRy);
     }
 
 

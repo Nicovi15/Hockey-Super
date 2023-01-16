@@ -39,6 +39,15 @@ public class Player : MonoBehaviour
     [SerializeField]
     Vector3 ballDir;
 
+    [Header("Camera Settings")]
+    [SerializeField]
+    RecoPlayer RP;
+    [SerializeField]
+    bool isGreen;
+    Vector3 camPos = Vector3.zero;
+    [SerializeField] 
+    float minDist;
+
     [Header("UI Settings")]
     [SerializeField]
     TextMeshProUGUI scoreText;
@@ -55,7 +64,6 @@ public class Player : MonoBehaviour
     [HideInInspector]
     public CameraPlayer CP;
 
-    
 
     private void Awake()
     {
@@ -83,25 +91,54 @@ public class Player : MonoBehaviour
         if (Physics.Raycast(ray, out hit, 500.0f, boardLayer)){
             newMousePos = ray.GetPoint(hit.distance);
         }
+
+        if(controller == Controller.Webcam)
+        {
+            if (isGreen)
+            {
+                camPos.x = -2.6f + 5.2f * ((630.0f - (float)RP.greenPos.x) / 310.0f);
+                camPos.z = -7.1f + 1.4f * (((float)RP.greenPos.y) - 150.0f) / 170.0f;
+            }
+            else
+            {
+                camPos.x = 2.6f - 5.2f * ((320.0f - (float)RP.bluePos.x) / 310.0f);
+                camPos.z = 7.1f - 1.4f * (((float)RP.bluePos.y) - 150.0f) / 170.0f;
+            }
+        }
     }
 
     private void FixedUpdate()
     {
         Vector3 newPos = Vector3.zero;
-        if(controller == Controller.Keyboard)
+        bool isValid = true;
+        if (controller == Controller.Keyboard)
         {
             //newPos = Vector3.Lerp(rb.position, rb.position + moveDirection.normalized * moveSpeed, Time.deltaTime * moveSpeed);
             newPos = Vector3.MoveTowards(transform.position, rb.position + moveDirection.normalized * moveSpeed, Time.deltaTime * moveSpeed);
         }
-        else if(controller == Controller.Mouse)
+        else if (controller == Controller.Mouse)
         {
             //newPos = Vector3.Lerp(rb.position, newMousePos, Time.deltaTime * moveSpeed);
             newPos = Vector3.MoveTowards(transform.position, newMousePos, Time.deltaTime * moveSpeed);
         }
         else
         {
+            if (camPos.x < -bounds.x)
+                isValid = false;
+            else if (camPos.x > bounds.x)
+                isValid = false;
 
+            if (camPos.z < bounds.z)
+                isValid = false;
+            else if (camPos.z > bounds.y)
+                isValid = false;
+
+            if (isValid)
+                if (Vector3.Distance(transform.position, camPos) < minDist)
+                    isValid = false;
+            newPos = camPos;
         }
+
         if (newPos.x < -bounds.x)
             newPos.x = -bounds.x;
         else if (newPos.x > bounds.x)
@@ -112,7 +149,8 @@ public class Player : MonoBehaviour
         else if (newPos.z > bounds.y)
             newPos.z = bounds.y;
 
-        rb.MovePosition(newPos);
+        if(isValid)
+            rb.MovePosition(newPos);
     }
 
     public void Goal(int point)

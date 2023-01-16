@@ -207,8 +207,8 @@ public class GameManager : MonoBehaviour
 
     public void showWinner(Player p)
     {
-        WinObject.SetActive(true);
         wName.text = p.pseudo;
+        WinObject.SetActive(true);
     }
 
     public void menuClick()
